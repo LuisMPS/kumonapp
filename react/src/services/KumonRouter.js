@@ -4,6 +4,7 @@ import LandingPage from "../pages/LandingPage";
 import StudentPage from "../pages/StudentPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import LoginPage from "../pages/LoginPage";
+import RegisterPage from "../pages/RegisterPage";
 
 function KumonRouter() {
     return <Router>
@@ -13,6 +14,9 @@ function KumonRouter() {
             </Route>
             <Route exact path = "/login">
                 <LoginPage />
+            </Route>
+            <Route exact path = "/register">
+                <RegisterPage />
             </Route>
             <Route exact path = "/student">
                 <StudentPage />

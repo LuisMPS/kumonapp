@@ -155,24 +155,16 @@ function useUserRegisterSubmit() {
     const [onSubmit, submit, submitStatus, submitHandler] = useSubmit();
     useEffect(() => {
         if (!submit.toSubmit || !submit.toSubmit.current) return;
-        const info = submit.toSubmit; const trigger = submit.trigger;
         const {key, ...userinfo} = submit.toSubmit.current;
         const source = axios.CancelToken.source();
         const config = {headers: {"Authorization": `Bearer ${key}`}, cancelToken: source.token};
         axios.post("/api/users", userinfo, config)
-        .then(success => submitHandler.onSuccess().execute(success, trigger, info))
+        .then(() => window.location.href = "/login")
         .catch(error => {
             if (!axios.isCancel(error)) submitHandler.onError().execute(error);
         });
         return () => source.cancel();
     }, [submit, submitHandler]);
-    const resetHandler = useRef({
-        onSuccess: [{id: "resetter", handler: (_, event, user) => {
-            event.target.reset();
-            user.current = {}
-        }}]
-    });
-    useSubmitHandlers(submitHandler, resetHandler);
     return [onSubmit, submitStatus, submitHandler];
 }
 
