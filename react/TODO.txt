@@ -1,0 +1,8 @@
+- MATERIAL UI
+- register form - DONE
+- fix image and report sources - DONE
+- fix pay panels - DONE
+- select fields on api calls - DONE
+- fix pay fields - DONE
+
+- BOOKS API
