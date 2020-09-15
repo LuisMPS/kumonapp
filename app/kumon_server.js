@@ -11,7 +11,7 @@ const connection = require("./db/connection");
 const app = express();
 app.use(cors());
 app.use(cookieParser());
-app.use(session({name: "session", httpOnly: true, resave: false, saveUninitialized: false, secret: "mTffUjJhip"}));
+app.use(session({name: "session", httpOnly: true, resave: false, saveUninitialized: false, secret: process.env.SESSION_SECRET}));
 
 const APIRouter = require("./router_api");
 app.use("/api", APIRouter);
