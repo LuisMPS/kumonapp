@@ -15,16 +15,16 @@ npm start
 
 ## Env Variables
 
-DB_HOST=
-DB_USER=
-DB_PASSWORD=
-JWT_SECRET=
-SESSION_SECRET=
-REGISTER_SECRET_KEY=
-IAM_ACCESS_KEY_ID=
-IAM_SECRET_ACCESS_KEY=
-AWS_REGION=
-AWS_S3_BUCKET=
+DB_HOST=  
+DB_USER=  
+DB_PASSWORD=  
+JWT_SECRET=  
+SESSION_SECRET=  
+REGISTER_SECRET_KEY=  
+IAM_ACCESS_KEY_ID=  
+IAM_SECRET_ACCESS_KEY=  
+AWS_REGION=  
+AWS_S3_BUCKET=  
 
 ## About
 
@@ -36,7 +36,7 @@ Esta es una aplicación web creada con el fin de ayudar en la administración de
   + Recordatorio de cumpleaños de alumnos.
   + Recordatorio de personas que deben pagos de mes actual.
   + Control sobre historial de pagos de último par de meses.
-  + Posibilidad de subir archivos de identificación de alumnos (Foto Personal, Boleta Mensual.
+  + Posibilidad de subir archivos de identificación de alumnos (Foto Personal, Boleta Mensual).
   + Registro personalizado de usuarios para asistentes.
 
 ## License
