@@ -15,6 +15,7 @@ function useRegularInput() {
 function useFileInput(filePath) {
     const file = useRef();
     const onFile = useCallback(event => {
+        if (!event.target.files[0]) return;
         const inputFile = event.target.files[0];
         inputFile.filePath = filePath;
         file.current = inputFile;
