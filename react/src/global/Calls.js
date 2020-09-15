@@ -93,7 +93,7 @@ function annivQuery(program, isDay) {
 
 function annivMonths(student, program) {
     const enroll = new Date(student.programs[program].enroll);
-    return month - enroll.getMonth() - 1;
+    return now.getMonth() - enroll.getUTCMonth() + (12 * (now.getFullYear() - enroll.getUTCFullYear()));
 }
 
 export {notifications, panels}
