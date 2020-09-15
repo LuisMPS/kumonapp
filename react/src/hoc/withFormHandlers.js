@@ -2,8 +2,8 @@ import React, {useRef} from "react";
 import {useSubmitHandlers} from "../hooks/useSubmit";
 
 function withFormHandlers(Fields, {useSubmit, useInput}) {
-    return function Form(props) {
-        const {renders = {}, ...formProps} = props;
+    return function HandledForm(props) {
+        const {className, renders = {}, ...formProps} = props;
         const {onSuccess, onError, values = {}, path = [], ...hookProps} = formProps;
         const {inputProps = [], submitProps = []} = hookProps;
         const [onInput, input] = useInput(...inputProps);
@@ -12,7 +12,7 @@ function withFormHandlers(Fields, {useSubmit, useInput}) {
         useSubmitHandlers(submitHandler, handlers);
         const {renderButton, renderSuccess, renderError} = renders;
         return (<>
-            <form onSubmit = {event => onSubmit(input, event)}>
+            <form onSubmit = {event => onSubmit(input, event)} className = {className}>
                 <Fields onInput = {onInput} initial = {{values, path}} submitHandler = {submitHandler}/>
                 {renderButton ? renderButton() : <button type = "submit">Subir</button>}
             </form>

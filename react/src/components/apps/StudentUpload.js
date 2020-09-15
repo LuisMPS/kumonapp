@@ -4,17 +4,24 @@ import UploadForm from "../forms/UploadForm";
 import Placeholder from "./StudentUploadPhoto.jpg";
 import {StyledButton} from "../styled/StyledButton";
 import Image from "../styled/Image";
-import {Link} from "@material-ui/core";
+import {Link, makeStyles} from "@material-ui/core";
+
+const useFormStyle = makeStyles({
+    upload_form: {margin: "1rem 0rem"}
+});
 
 function StudentUpload(props) {
+    const classes = useFormStyle();
     const {filePath, fileStartSource, ...rest} = props;
     const {render} = rest;
     const [source, setSource] = useState({src: fileStartSource, timestamp: Date.now()});
     return (<>
         {render && render(source)}
-        <UploadForm inputProps = {[filePath]} 
+        <UploadForm className = {classes.upload_form} inputProps = {[filePath]} 
         onSuccess = {[{id: "source-changer", handler: source => setSource({src: source, timestamp: Date.now()})}]}
-        renders = {{renderButton: () => <StyledButton startIcon = {<CloudUploadIcon />} type = "submit">Subir</StyledButton>}}
+        renders = {{renderButton: () => <StyledButton startIcon = {<CloudUploadIcon />} type = "submit">
+            Subir
+        </StyledButton>}}
         />
     </>);
 }
