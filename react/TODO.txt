@@ -1,4 +1,5 @@
-- MATERIAL UI
+- MATERIAL UI - FINISH
+- FIX SUB BUTTON AFTER SUBBING - 
 - register form - DONE
 - fix image and report sources - DONE
 - fix pay panels - DONE

@@ -168,6 +168,22 @@ function useUserRegisterSubmit() {
     return [onSubmit, submitStatus, submitHandler];
 }
 
+function useProgramUnsubSubmit(program) {
+    const [onSubmit, submit, submitStatus, submitHandler] = useSubmit();
+    const studentUUID = useContext(UUIDContext);
+    useEffect(() => {
+        if (!submit.toSubmit || !submit.toSubmit.current) return;
+        const source = axios.CancelToken.source();
+        axios.delete(`/api/students/programs?program=${program}&uuid=${studentUUID}`, {cancelToken: source.token})
+        .then(success => submitHandler.onSuccess().execute(success.data.src))
+        .catch(error => {
+            if (!axios.isCancel(error)) submitHandler.onError().execute(error);
+        });
+        return () => source.cancel();
+    }, [submit, submitHandler, studentUUID, program])
+    return [onSubmit, submitStatus, submitHandler];
+}
+
 function useSubmitHandlers(submitHandler, handlers) {
     useEffect(() => {
         const {onSuccess = [], onError = []} = handlers.current || {};
@@ -182,4 +198,4 @@ function useSubmitHandlers(submitHandler, handlers) {
 
 export {useRegisterSubmit, useUpdateSubmit, useFileSubmit, 
         useUserRegisterSubmit, useUserLoginSubmit, useUnsubSubmit,
-        useSubmitHandlers};
+        useProgramUnsubSubmit, useSubmitHandlers};

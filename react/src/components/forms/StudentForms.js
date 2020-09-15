@@ -1,16 +1,23 @@
 import {useRegisterSubmit, useUpdateSubmit} from "../../hooks/useSubmit";
 import {useRegularInput} from "../../hooks/useInput";
 import withFormHandlers from "../../hoc/withFormHandlers";
-import {RegisterFields, UpdateFields} from "../fields/StundentFields";
+import RegisterFields from "../fields/RegisterFields";
+import BasicInformationFields from "../fields/BasicFields";
+import {HandledProgramPayFields} from "../fields/ProgramsFields";
 
 const StudentRegisterForm = withFormHandlers(RegisterFields, 
     {useSubmit: useRegisterSubmit, useInput: useRegularInput}
 );
-const StudentUpdateForm = withFormHandlers(UpdateFields, 
+
+const StudentBasicForm = withFormHandlers(BasicInformationFields,
     {useSubmit: useUpdateSubmit, useInput: useRegularInput}
 );
 
-export {StudentRegisterForm, StudentUpdateForm};
+const StudentProgramForm = withFormHandlers(HandledProgramPayFields,
+    {useSubmit: useUpdateSubmit, useInput: useRegularInput}
+);
+
+export {StudentRegisterForm, StudentBasicForm, StudentProgramForm};
 
 
 

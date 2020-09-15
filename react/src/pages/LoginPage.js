@@ -1,12 +1,13 @@
 import React from "react";
-import Header from "../layout/Header";
-import {UserLogin} from "../components/apps/UserAuth";
+import Background from "../layout/Background";
+import {UserLoginCard, UserAuthGrid} from "../layout/UserAuthCard";
 
 function LoginPage() {
-    return <>
-        <Header />
-        <UserLogin />
-    </>
+    return <Background>
+        <UserAuthGrid>
+            <UserLoginCard />
+        </UserAuthGrid>
+    </Background>
 }
 
 export default LoginPage;

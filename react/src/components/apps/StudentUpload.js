@@ -1,6 +1,10 @@
 import React, {useState} from "react";
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import UploadForm from "../forms/UploadForm";
 import Placeholder from "./StudentUploadPhoto.jpg";
+import {StyledButton} from "../styled/StyledButton";
+import Image from "../styled/Image";
+import {Link} from "@material-ui/core";
 
 function StudentUpload(props) {
     const {filePath, fileStartSource, ...rest} = props;
@@ -8,10 +12,10 @@ function StudentUpload(props) {
     const [source, setSource] = useState({src: fileStartSource, timestamp: Date.now()});
     return (<>
         {render && render(source)}
-        <UploadForm filePath = {filePath} 
-        onSuccess = {[
-            {id: "source-changer", handler: source => setSource({src: source, timestamp: Date.now()})}
-        ]}/>
+        <UploadForm inputProps = {[filePath]} 
+        onSuccess = {[{id: "source-changer", handler: source => setSource({src: source, timestamp: Date.now()})}]}
+        renders = {{renderButton: () => <StyledButton startIcon = {<CloudUploadIcon />} type = "submit">Subir</StyledButton>}}
+        />
     </>);
 }
 
@@ -22,8 +26,8 @@ function StudentUploadPhoto({fileStartSource}) {
     const onPhotoError = event => event.target.src = placeholderPath; 
     return <StudentUpload filePath = "photo" fileStartSource = {fileStartSource}
     render = {photoSource => {
-        return <img src = {photoSource.src ? `${path}/${photoSource.src}?timestamp=${photoSource.timestamp}`: placeholderPath} 
-        alt = "alumno" onError = {onPhotoError} />
+        return <Image src = {photoSource.src ? `${path}/${photoSource.src}?timestamp=${photoSource.timestamp}`: placeholderPath} 
+        alt = "alumno" onError = {onPhotoError} imageStyle = {{width: "50%"}}/>
     }}/>
 }
 
@@ -33,7 +37,9 @@ function StudentUploadReport({fileStartSource, reportPath}) {
     return <StudentUpload filePath = {filePath} fileStartSource = {fileStartSource}
     render = {reportSource => {
         return reportSource.src 
-        ? <a href = {`${path}/${reportSource.src}`} download = "boleta">Descargado: {new Date().toISOString()}</a>
+        ? <Link href = {`${path}/${reportSource.src}`} download = "boleta">
+            Descargado: {new Date().toLocaleString()}
+        </Link>
         : <p>No has subido ninguna boleta aún...</p>
     }} 
     />

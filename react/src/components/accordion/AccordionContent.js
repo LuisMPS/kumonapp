@@ -1,9 +1,15 @@
+import {makeStyles, Typography} from "@material-ui/core";
 import React, {useContext, useRef, useLayoutEffect, useEffect} from "react";
 import {AccordionContext} from "./Accordion.js";
 
-function AccordionContent({children}) {
+const useStyles = makeStyles({
+    accordion_wrapper: {overflowY: "hidden", transition: "height 0.25s ease-out"}
+});
+
+function AccordionContent({className, children}) {
     const wrapper = useRef();
     const accordion = useContext(AccordionContext);
+    const classes = useStyles();
     
     useEffect(() => {
         const observer = new MutationObserver(() => {
@@ -20,19 +26,17 @@ function AccordionContent({children}) {
     }, [accordion.isActive]);
     
     return (
-        <div ref = {wrapper} className = "accordion-wrapper">
-            <div className = "accordion-content">
-                {children}
-            </div>
+        <div ref = {wrapper} className = {classes.accordion_wrapper}>
+            <div className = {className}>{children}</div>
         </div>
     );
 }
 
-function AccordionHead({title, children}) {
+function AccordionHead({className, title, children}) {
     const accordion = useContext(AccordionContext);
     return (
-        <div className = "accordion-head" onClick = {accordion.onToggle}>
-            <span className = "accordion-title">{title}</span>
+        <div className = {className} onClick = {accordion.onToggle}>
+            <Typography component = "span">{title}</Typography>
             {children}
         </div>
     );
@@ -41,7 +45,7 @@ function AccordionHead({title, children}) {
 function AccordionIcon({className, children}) {
     const accordion = useContext(AccordionContext); 
     return (
-        <span className = {`${className || "accordion-icon"} ${accordion.isActive ? "active" : "inactive"}`}>
+        <span className = {`${className} ${accordion.isActive ? "active" : "inactive"}`}>
             {children}
         </span>
     );

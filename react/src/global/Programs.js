@@ -17,8 +17,8 @@ class Programs {
 }
 
 const programs = new Programs(
-    ["math", "matemáticas"], 
-    ["reading", "lectura"],
-    ["english", "ingles"]
+    ["math", "Matemáticas"], 
+    ["reading", "Lectura"],
+    ["english", "Inglés"]
 );
 export default programs;

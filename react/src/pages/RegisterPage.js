@@ -1,12 +1,13 @@
 import React from "react";
-import Header from "../layout/Header";
-import {UserRegister} from "../components/apps/UserAuth";
+import Background from "../layout/Background";
+import {UserRegisterCard, UserAuthGrid} from "../layout/UserAuthCard";
 
 function RegisterPage() {
-    return <>
-        <Header />
-        <UserRegister />
-    </>
+    return <Background>
+        <UserAuthGrid>
+            <UserRegisterCard />
+        </UserAuthGrid>
+    </Background>
 }
 
 export default RegisterPage;

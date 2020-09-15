@@ -7,4 +7,8 @@ function addMonthsUTC(date, count) {
 	return date;
 }
 
-export {addMonthsUTC};
+function isEmpty(obj) {
+	return Object.keys(obj).length === 0 && obj.constructor === Object;
+}
+
+export {addMonthsUTC, isEmpty};

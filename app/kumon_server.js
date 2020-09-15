@@ -22,7 +22,7 @@ app.use(passport.session());
 const loginRouter = require("./router_login");
 app.use("/login", loginRouter);
 
-app.get("/login", protected.loginPage);
+app.get(["/login", "/register"], protected.loginPage);
 app.get(["/", "/student", "/birthdays"], protected.anyPage);
 
 const serve = serveStatic("./public");

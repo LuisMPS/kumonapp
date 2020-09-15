@@ -1,19 +1,22 @@
 import React from "react";
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import LockIcon from '@material-ui/icons/Lock';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import Fields from "./Fields";
 
 function UserLoginFields({onInput}) {
     const loginfields = [
-        {name: "username", label: "Usuario", type: "text"},
-        {name: "password", label: "Contraseña", type: "password"},
+        {name: "username", placeholder: "Usuario", type: "text", styles: {variant: "outlined", adornment: <AccountCircleIcon />}},
+        {name: "password", placeholder: "Contraseña", type: "password", styles: {variant: "outlined", adornment: <LockIcon />}}
     ];
     return <Fields onInput = {onInput} fields = {loginfields} required />
 }
 
 function UserRegisterFields({onInput}) {
     const registerfields = [
-        {name: "key", label: "Clave de Registro", type: "password"},
-        {name: "username", label: "Usuario", type: "text"},
-        {name: "password", label: "Contraseña", type: "password"},
+        {name: "key", placeholder: "Clave de Registro", type: "password", styles: {variant: "outlined", adornment: <VpnKeyIcon />}},
+        {name: "username", placeholder: "Usuario", type: "text", styles: {variant: "outlined", adornment: <AccountCircleIcon />}},
+        {name: "password", placeholder: "Contraseña", type: "password", styles: {variant: "outlined", adornment: <LockIcon />}}
     ];
     return <Fields onInput = {onInput} fields = {registerfields} required />
 }

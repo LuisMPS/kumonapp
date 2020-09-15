@@ -1,8 +1,8 @@
 import React from 'react';
-import KumonRouter from "./services/KumonRouter";
+import KumonRoot from "./services/KumonRoot";
 
 function App() {
-  return <KumonRouter />;
+  return <KumonRoot />;
 }
 
 export default App;

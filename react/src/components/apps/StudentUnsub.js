@@ -1,13 +1,24 @@
 import React from "react";
-import UnsubForm from "../forms/UnsubForm";
-import {FlashCard} from "../cards/Cards";
+import {UnsubForm, UnsubProgramForm} from "../forms/UnsubForm";
+import SnackbarCard from "../cards/SnackbarCard";
 
 function StudentUnsub() {
-    return <UnsubForm submitButton = {false} renders = {{
-        renderError: () => <FlashCard duration = {2500} type = "error">
-            <p>No se pudo dar de baja</p>
-        </FlashCard>
+    return <UnsubForm renders = {{
+        renderButton: () => null,
+        renderError: () => <SnackbarCard autoHideDuration = {2500} type = "error">
+            No se pudo dar de baja
+        </SnackbarCard>
     }}/>
 }
 
-export default StudentUnsub;
+function StudentProgramUnsub({program, programUpdate}) {
+    const onSuccess = [{id: "fetcher", handler: programUpdate}];
+    return <UnsubProgramForm onSuccess = {onSuccess} submitProps = {[program]} renders = {{
+        renderButton: () => null,
+        renderError: () => <SnackbarCard autoHideDuration = {2500} type = "error">
+            No se pudo dar de baja de programa
+        </SnackbarCard>
+    }}/>
+}
+
+export {StudentUnsub, StudentProgramUnsub};
