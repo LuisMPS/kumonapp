@@ -60,9 +60,7 @@ function useUpdateSubmit() {
         const update = submit.toSubmit.current;
         const source = axios.CancelToken.source();
         axios.put(`/api/students/update?uuid=${studentUUID}`, update, {cancelToken: source.token})
-        .then(success => {
-            submitHandler.onSuccess().execute(success, trigger, info);
-        })
+        .then(success => submitHandler.onSuccess().execute(success, trigger, info))
         .catch(error => {
             if (!axios.isCancel(error)) submitHandler.onError().execute(error, trigger, info)
         });

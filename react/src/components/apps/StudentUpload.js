@@ -3,6 +3,7 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import UploadForm from "../forms/UploadForm";
 import Placeholder from "./StudentUploadPhoto.jpg";
 import {StyledButton} from "../styled/StyledButton";
+import SnackbarCard from "../cards/SnackbarCard";
 import Image from "../styled/Image";
 import {Link, makeStyles} from "@material-ui/core";
 
@@ -15,15 +16,17 @@ function StudentUpload(props) {
     const {filePath, fileStartSource, ...rest} = props;
     const {render} = rest;
     const [source, setSource] = useState({src: fileStartSource, timestamp: Date.now()});
-    return (<>
+    return <>
         {render && render(source)}
         <UploadForm className = {classes.upload_form} inputProps = {[filePath]} 
         onSuccess = {[{id: "source-changer", handler: source => setSource({src: source, timestamp: Date.now()})}]}
-        renders = {{renderButton: () => <StyledButton startIcon = {<CloudUploadIcon />} type = "submit">
-            Subir
-        </StyledButton>}}
+        renders = {{
+            renderButton: () => <StyledButton startIcon = {<CloudUploadIcon />} type = "submit">Subir</StyledButton>,
+            renderSuccess: () => <SnackbarCard autoHideDuration = {3000} type = "success">Actualizado correctamente!</SnackbarCard>,
+            renderError: () => <SnackbarCard autoHideDuration = {2500} type = "error">Error al subir!</SnackbarCard>,
+        }}
         />
-    </>);
+    </>;
 }
 
 
