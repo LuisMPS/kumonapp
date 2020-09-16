@@ -1,10 +1,9 @@
 import React from "react";
-import Background, {BackgroundDisplay} from "../layout/Background";
+import Background from "../layout/Background";
 import {UserLoginCard} from "../layout/UserAuthCard";
 
 function LoginPage() {
     return <Background>
-        <BackgroundDisplay />
         <UserLoginCard />
     </Background>
 }
