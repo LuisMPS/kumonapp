@@ -1,12 +1,11 @@
 import React from "react";
-import Background from "../layout/Background";
-import {UserLoginCard, UserAuthGrid} from "../layout/UserAuthCard";
+import Background, {BackgroundDisplay} from "../layout/Background";
+import {UserLoginCard} from "../layout/UserAuthCard";
 
 function LoginPage() {
     return <Background>
-        <UserAuthGrid>
-            <UserLoginCard />
-        </UserAuthGrid>
+        <BackgroundDisplay />
+        <UserLoginCard />
     </Background>
 }
 

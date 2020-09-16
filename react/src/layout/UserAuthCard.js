@@ -1,45 +1,55 @@
 import React from "react";
-import {Card, CardContent, Grid, makeStyles} from "@material-ui/core";
+import {Paper, makeStyles} from "@material-ui/core";
 import {UserLogin, UserRegister} from "../components/apps/UserAuth";
 import {StyledButton} from "../components/styled/StyledButton";
 import Image from "../components/styled/Image";
 import logo from "./logo_blue.svg";
 
 
-const useStyles = makeStyles({
-    card_content: {textAlign: "center", padding: "2rem 2rem", marginTop: props => props.marginTop}
-});
+const useStyles = makeStyles(theme => ({
+    content: props => ({
+        position: "absolute",
+        top: "50%", left: "50%",
+        transform: "translate(-50%, -50%)",
+        textAlign: "center",
+        [theme.breakpoints.up("sm")]: {
+            padding: "5% 2.5%",
+            width: "40%"
+        },
+        [theme.breakpoints.up("lg")]: {
+            padding: "4% 2%",
+            width: "35%"
+        },
+        [theme.breakpoints.down("sm")]: {
+            padding: "6% 4%",
+            width: "50%"
+        },
+        [theme.breakpoints.down("xs")]: {
+            padding: "6% 4%",
+            width: "70%"
+        },
+        ...props
+    })
+}));
 
 function UserLoginCard() {
-    const classes = useStyles({marginTop: "6.5rem"});
+    const classes = useStyles();
     const buttonStyle = {width: "10rem"};
-    return <Card className = {classes.card_content} elevation = {10}>
-        <CardContent>
-            <Image src = {logo} alt = "logo" imageStyle = {{width: "70%", marginBottom: "1.5rem"}} />
-            <UserLogin />
-            <StyledButton variant = "outlined" color = "primary" href = "/register" buttonStyle = {buttonStyle}>Registrar aquí</StyledButton>
-        </CardContent>
-    </Card>;
+    return <Paper className = {classes.content} elevation = {10}>
+        <Image src = {logo} alt = "logo" imageStyle = {{width: "70%", marginBottom: "1.5rem"}} />
+        <UserLogin />
+        <StyledButton variant = "outlined" color = "primary" href = "/register" buttonStyle = {buttonStyle}>Registrar aquí</StyledButton>
+    </Paper>;
 }
 
 function UserRegisterCard() {
-    const classes = useStyles({marginTop: "4rem"});
+    const classes = useStyles();
     const buttonStyle = {width: "10rem"};
-    return <Card className = {classes.card_content} elevation = {10}>
-        <CardContent>
-            <Image src = {logo} alt = "logo" imageStyle = {{width: "70%", marginBottom: "1.5rem"}} />
-            <UserRegister />
-            <StyledButton variant = "outlined" color = "primary" href = "/login" buttonStyle = {buttonStyle}>Ingresa aquí</StyledButton>
-        </CardContent>
-    </Card>
+    return <Paper className = {classes.content} elevation = {10}>
+        <Image src = {logo} alt = "logo" imageStyle = {{width: "70%", marginBottom: "1.5rem"}} />
+        <UserRegister />
+        <StyledButton variant = "outlined" color = "primary" href = "/login" buttonStyle = {buttonStyle}>Ingresa aquí</StyledButton>
+    </Paper>
 }
 
-function UserAuthGrid({children}) {
-    return <Grid container>
-        <Grid item xs = {2} sm = {3} md = {4}/>
-        <Grid item xs = {8} sm = {6} md = {4}>{children}</Grid>
-        <Grid item xs = {2} sm = {3} md = {4}/>
-    </Grid>
-}
-
-export {UserLoginCard, UserRegisterCard, UserAuthGrid};
+export {UserLoginCard, UserRegisterCard};
