@@ -42,7 +42,7 @@ function useSubmit() {
     );
     const onSubmit = (info, event) => {
         event.preventDefault();
-        if (submitStatus.wait.pending) return;
+        if (submitStatus.wait.pending || !info || !info.current) return;
         event.persist();
         setSubmitStatus({wait: {pending: true, progress: {}}, success: null, error: null}); //UPDATES HERE ARE BATCHED
         setSubmit({toSubmit: info, trigger: event});
@@ -83,7 +83,7 @@ function useUpdateSubmit() {
 function useRegisterSubmit() {
     const [onSubmit, submit, submitStatus, submitHandler] = useSubmit();
     useEffect(() => {
-        if (!submit.toSubmit) return;
+        if (!submit.toSubmit || !submit.toSubmit.current) return;
         const info = submit.toSubmit;
         const student = submit.toSubmit.current;
         const trigger = submit.trigger;
@@ -142,7 +142,7 @@ function useUserLoginSubmit() {
         const login = submit.toSubmit.current;
         const source = axios.CancelToken.source();
         axios.post("/login/user", login, {cancelToken: source.token})
-        .then(() => window.location.href = "/")
+        .then(() => { submitHandler.onSuccess().execute(); window.location.href = "/" })
         .catch(error => {
             if (!axios.isCancel(error)) submitHandler.onError().execute(error)
         });
@@ -158,7 +158,7 @@ function useUnsubSubmit() {
         if (!submit.toSubmit || !submit.toSubmit.current) return;
         const source = axios.CancelToken.source();
         axios.delete(`/api/students/delete?uuid=${studentUUID}`, {cancelToken: source.token})
-        .then(() => window.location.href = "/")
+        .then(() => { submitHandler.onSuccess().execute(); window.location.href = "/"; })
         .catch(error => {
             if (!axios.isCancel(error)) submitHandler.onError().execute(error)
         });
@@ -175,7 +175,7 @@ function useUserRegisterSubmit() {
         const source = axios.CancelToken.source();
         const config = {headers: {"Authorization": `Bearer ${key}`}, cancelToken: source.token};
         axios.post("/api/users", userinfo, config)
-        .then(() => window.location.href = "/login")
+        .then(() => { submitHandler.onSuccess().execute(); window.location.href = "/login" })
         .catch(error => {
             if (!axios.isCancel(error)) submitHandler.onError().execute(error);
         });
