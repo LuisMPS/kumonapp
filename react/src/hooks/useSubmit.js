@@ -4,13 +4,16 @@ import axios from "axios";
 
 class SubmitHandler {
     constructor() {
-        this.handlers = {onSuccess: new Handlers(), onError: new Handlers()};
+        this.handlers = {onSuccess: new Handlers(), onError: new Handlers(), onWait: new Handlers()};
     }
     onSuccess() { 
         return this.handlers.onSuccess; 
     }
     onError() { 
         return this.handlers.onError; 
+    }
+    onWait() {
+        return this.handlers.onWait;
     }
 }
 
@@ -34,17 +37,21 @@ class Handlers {
 
 function useSubmit() {
     const [submit, setSubmit] = useState({toSubmit: null, trigger: null});
-    const [submitStatus, setSubmitStatus] = useState({success: null, error: null});
+    const [submitStatus, setSubmitStatus] = useState(
+        {wait: {pending: false, progress: null}, success: null, error: null}
+    );
     const onSubmit = (info, event) => {
         event.preventDefault();
+        if (submitStatus.wait.pending) return;
         event.persist();
-        setSubmitStatus({success: null, error: null}); //UPDATES HERE ARE BATCHED
+        setSubmitStatus({wait: {pending: true, progress: {}}, success: null, error: null}); //UPDATES HERE ARE BATCHED
         setSubmit({toSubmit: info, trigger: event});
     };
     const submitHandler = useRef(new SubmitHandler()).current;
     const statusHandlers = useRef({
-        onSuccess: [{id: "success", handler: success => setSubmitStatus({success, error: null})}],
-        onError: [{id: "error", handler: error => setSubmitStatus({error, success: null})}]
+        onSuccess: [{id: "success", handler: success => setSubmitStatus({success, error: null, wait: {pending: false, progress: null}})}],
+        onError: [{id: "error", handler: error => setSubmitStatus({error, success: null, wait: {pending: false, progress: null}})}],
+        onWait: [{id: "wait", handler: progress => setSubmitStatus({wait: {pending: true, progress}, success: null, error: null})}]
     });
     useSubmitHandlers(submitHandler, statusHandlers);
     return [onSubmit, submit, submitStatus, submitHandler];
@@ -54,7 +61,7 @@ function useUpdateSubmit() {
     const [onSubmit, submit, submitStatus, submitHandler] = useSubmit();
     const studentUUID = useContext(UUIDContext); 
     useEffect(() => {
-        if (!submit.toSubmit) return;
+        if (!submit.toSubmit || !submit.toSubmit.current) return;
         const trigger = submit.trigger;
         const info = submit.toSubmit;
         const update = submit.toSubmit.current;
@@ -98,22 +105,33 @@ function useRegisterSubmit() {
     return [onSubmit, submitStatus, submitHandler];
 }
 
-function useFileSubmit() {
+function useFileSubmit(filePath) {
     const [onSubmit, submit, submitStatus, submitHandler] = useSubmit();
     const studentUUID = useContext(UUIDContext);
     useEffect(() => {
         if (!submit.toSubmit || !submit.toSubmit.current) return;
         const file = submit.toSubmit.current;
-        const filePath = file.filePath;
         const source = axios.CancelToken.source();
-        const config = {headers: {"Accept": "*/*", "Content-Type": `${file.type}`}};
-        axios.post(`/api/students/upload/${filePath}?uuid=${studentUUID}`, file, {...config, cancelToken: source.token})
-        .then(success => submitHandler.onSuccess().execute(success.data.src))
-        .catch(error => {
-            if (!axios.isCancel(error)) submitHandler.onError().execute(error);
-        });
+        const fileSplit = file.name.split(".");
+        const ext = `.${fileSplit[fileSplit.length - 1]}`;
+        const src = [filePath, studentUUID].join("/").concat(ext);
+        axios.get(`/api/students/upload/${filePath}?uuid=${studentUUID}`, {cancelToken: source.token})
+        .then(response => response.data)
+        .then(signature => {
+            const {url, fields} = signature;
+            const formData = new FormData();
+            Object.keys(fields).forEach(key => formData.append(key, fields[key]));
+            formData.append("key", src)
+            formData.append("file", file);
+            return axios.post(url, formData, {cancelToken: source.token, onUploadProgress: progress => submitHandler.onWait().execute(progress)})
+        })
+        .then(() => axios.put(`/api/students/upload/${filePath}?uuid=${studentUUID}`, {src}, {cancelToken: source.token}))
+        .then(() => submitHandler.onSuccess().execute(src))
+        .catch(err => {
+            if (!axios.isCancel(err)) submitHandler.onError().execute(err)
+        })
         return () => source.cancel();
-    }, [submit, submitHandler, studentUUID]);
+    }, [submit, submitHandler, studentUUID, filePath]);
     return [onSubmit, submitStatus, submitHandler];
 }
 
@@ -128,7 +146,7 @@ function useUserLoginSubmit() {
         .catch(error => {
             if (!axios.isCancel(error)) submitHandler.onError().execute(error)
         });
-        return () => source.cancel();
+        return source.cancel;
     }, [submit, submitHandler]);
     return [onSubmit, submitStatus, submitHandler];
 }
@@ -184,12 +202,14 @@ function useProgramUnsubSubmit(program) {
 
 function useSubmitHandlers(submitHandler, handlers) {
     useEffect(() => {
-        const {onSuccess = [], onError = []} = handlers.current || {};
+        const {onSuccess = [], onError = [], onWait = []} = handlers.current || {};
         submitHandler.onSuccess().register(...onSuccess);
         submitHandler.onError().register(...onError);
+        submitHandler.onWait().register(...onWait);
         return () => {
             submitHandler.onSuccess().unregister(...onSuccess);
             submitHandler.onError().unregister(...onError);
+            submitHandler.onWait().unregister(...onWait);
         }
     }, [submitHandler, handlers]);
 }
