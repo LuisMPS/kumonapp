@@ -37,6 +37,8 @@ const StudentSchema = new Schema(
 );
 
 StudentSchema.pre("save", function(next) {
+	this.name = this.name.trim();
+	this.lastname = this.lastname.trim();
 	this.fullname = `${this.name} ${this.lastname}`;
 	next();
 });
