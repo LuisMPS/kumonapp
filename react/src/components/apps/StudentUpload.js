@@ -26,7 +26,7 @@ function StudentUpload(props) {
             renderSuccess: () => <SnackbarCard autoHideDuration = {3000} type = "success">Actualizado correctamente!</SnackbarCard>,
             renderError: () => <SnackbarCard autoHideDuration = {2500} type = "error">Error al subir!</SnackbarCard>,
             renderWait: progress => <ProgressCard color = "primary"
-                value = {progress.loaded && progress.total ? progress.loaded / progress.total * 100 : 0} />
+                value = {progress && progress.loaded && progress.total ? progress.loaded / progress.total * 100 : 0} />
         }}
         />
     </>;
