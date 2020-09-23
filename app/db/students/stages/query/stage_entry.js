@@ -21,10 +21,10 @@ const StudentStages = [...BasicStages, autocomplete].map(stage => stage(StudentS
 const CommentStages = [...BasicStages, sort].map(stage => stage(CommentSchema)).concat([limit]);
 
 const entryStudent = new Stage("entryStudent", ...StudentStages);
-entryStudent.setFallback(fallback);
+entryStudent.setFallback(fallback(StudentSchema));
 
 const entryComment = new Stage("entryComment", ...CommentStages);
-entryComment.setFallback(fallback);
+entryComment.setFallback(fallback(CommentSchema));
 
 exports.entryStudent = entryStudent;
 exports.entryComment = entryComment;

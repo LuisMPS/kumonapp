@@ -3,7 +3,7 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const protect = require("../router_protect");
 
-//router.use("/", protect);
+router.use("/", protect);
 
 const getStudent = require("../../db/students/student_get");
 router.get("/", getStudent); 
