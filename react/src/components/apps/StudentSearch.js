@@ -1,35 +1,66 @@
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 import SearchIcon from '@material-ui/icons/Search';
-import {makeStyles, Paper, Link, Typography} from "@material-ui/core";
+import {makeStyles, Paper, Link, Typography, Chip} from "@material-ui/core";
 import useStudentFetch from "../../hooks/useStudentFetch";
 import StudentFormatter from "../student/StudentFormatter";
 import StyledInput from "../styled/StyledInput";
 import Label from "../styled/Label";
+import Programs from "../../global/Programs";
 
 function StudentSearch() {
     const source = useRef([]);
-    const query = source.current;
-    const [fetcher, refetcher] = useStudentFetch(query);
-    const onQuery = event => {
-        const src = `/api/students?select_fullname=1&select_birth=1&select_uuid=1&autocomplete_fullname=`;
-        const query = event.target.value ? `${src}${event.target.value}`: `${src}$`;
-        source.current = [query];
+    const endpoint = source.current;
+    const queries = useRef(new Map());
+    const onQuery = ([query, value]) => {
+        if (!value) queries.current.delete(query);
+        else queries.current.set(query, value);
+        const base = `/api/students?`;
+        const selectors = [["select_uuid", 1], ["select_birth", 1], ["select_fullname", 1]];
+        const queryList = Array.from(queries.current.entries()).concat(selectors)
+            .map(([query, value]) => `${query}=${value}`);
+        const endpoint = `${base}${queryList.join("&")}`;
+        source.current = queries.current.size > 0 ? [endpoint] : [];
         refetcher(); 
     }
+    const [fetcher, refetcher] = useStudentFetch(endpoint);
     const results = fetcher.fetched;
     return <>
         <StudentSearchBar onQuery = {onQuery}/>
+        <StudentSearchPrograms onQuery = {onQuery} />
         <StudentSearchResults results = {results} />
     </>
 }
 
 function StudentSearchBar({onQuery}) {
-    return <Label>Buscar Alumno
-        <StyledInput adornment = {<SearchIcon />} variant = "filled" onInput = {onQuery} inputStyle = {{width: 220}}/>
+    const onInput = event => onQuery(["autocomplete_fullname", event.target.value || null]);
+    return <Label labelStyle = {{display: "inline"}}>Buscar Alumno
+        <StyledInput adornment = {<SearchIcon />} variant = "filled" onInput = {onInput} inputStyle = {{display: "inline"}}/>
     </Label>
 }
 
-const useStyles = makeStyles(theme => ({
+const useChipStyles = makeStyles(theme => ({
+    chip: {margin: theme.spacing(1)}
+}));
+
+function StudentSearchChip({onQuery, query, label}) {
+    const classes = useChipStyles();
+    const [active, setActive] = useState(false);
+    const onClick = () => setActive(active => {
+        onQuery([query, active ? null : 1]);
+        return !active;
+    })
+    return <Chip clickable component = "span" color = {active ? "primary": "default"} label = {label} onClick = {onClick} variant = "default" className = {classes.chip}/>
+}
+
+function StudentSearchPrograms({onQuery}) {
+    return Programs.names().map(program => 
+        <StudentSearchChip key = {program} onQuery = {onQuery} 
+        query = {`exists_programs>${program.toLowerCase()}`} 
+        label = {`Inscrito a ${Programs.alias(program)}`}/>
+    );
+}
+
+const useResultStyles = makeStyles(theme => ({
     result_wrapper: {
         backgroundColor: theme.palette.primary.light, 
         margin: "1rem 0rem",
@@ -54,7 +85,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function StudentSearchResults({results}) {
-    const classes = useStyles();
+    const classes = useResultStyles();
     return <StudentFormatter students = {results} formatter = {student => 
         <Paper className = {classes.result_wrapper} elevation = {7}>
         <Link className = {classes.result_link} href = {`/student?uuid=${student.uuid}`}>
