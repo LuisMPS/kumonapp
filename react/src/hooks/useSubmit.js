@@ -44,7 +44,7 @@ function useSubmit() {
         event.preventDefault();
         if (submitStatus.wait.pending || !info || !info.current) return;
         event.persist();
-        setSubmitStatus({wait: {pending: true, progress: {}}, success: null, error: null}); //UPDATES HERE ARE BATCHED
+        setSubmitStatus({wait: {pending: true, progress: null}, success: null, error: null}); //UPDATES HERE ARE BATCHED
         setSubmit({toSubmit: info, trigger: event});
     };
     const submitHandler = useRef(new SubmitHandler()).current;
@@ -55,6 +55,50 @@ function useSubmit() {
     });
     useSubmitHandlers(submitHandler, statusHandlers);
     return [onSubmit, submit, submitStatus, submitHandler];
+}
+
+function useRegisterSubmit() {
+    const [onSubmit, submit, submitStatus, submitHandler] = useSubmit();
+
+    useEffect(() => {
+        if (!submit.toSubmit || !submit.toSubmit.current) return;
+        const info = submit.toSubmit;
+        const student = submit.toSubmit.current;
+        const trigger = submit.trigger
+        const {name, lastname} = student;
+        const source = axios.CancelToken.source();
+        axios.get(`/api/students?detect_name=${name}&detect_lastname=${lastname}`, {cancelToken: source.token})
+        .then(success => success.data)
+        .then(students => submitHandler.onWait().execute({allow: students.length === 0, trigger, info}))
+        .catch(error => {
+            if (!axios.isCancel(error)) submitHandler.onError().execute(error)
+        });
+        return () => source.cancel();
+    }, [submit, submitHandler]); //DEPENDENCIES PREVENT RE-CHECK
+
+    useEffect(() => {
+        if (!submitStatus.wait.progress || !submitStatus.wait.progress.allow) return;
+        if (!submit.toSubmit || !submit.toSubmit.current) return;
+        const info = submit.toSubmit;
+        const student = submit.toSubmit.current;
+        const trigger = submit.trigger;
+        const source = axios.CancelToken.source();
+        axios.post(`/api/students`, student, {cancelToken: source.token})
+        .then(success => submitHandler.onSuccess().execute(success, trigger, info))
+        .catch(error => {
+            if (!axios.isCancel(error)) submitHandler.onError().execute(error, trigger, info)
+        });
+        return () => source.cancel();
+    }, [submit, submitHandler, submitStatus.wait.progress]);
+
+    const resetHandler = useRef({
+        onSuccess: [{id: "resetter", handler: (_f, event, student) => {
+            if (event) event.target.reset();
+            if (student) student.current = {}
+        }}]
+    });
+    useSubmitHandlers(submitHandler, resetHandler);
+    return [onSubmit, submitStatus, submitHandler];
 }
 
 function useUpdateSubmit() {
@@ -75,31 +119,6 @@ function useUpdateSubmit() {
     }, [submit, submitHandler, studentUUID]);
     const resetHandler = useRef({
         onSuccess: [{id: "resetter", handler: (_f, _s, update) => update.current = {}}]
-    });
-    useSubmitHandlers(submitHandler, resetHandler);
-    return [onSubmit, submitStatus, submitHandler];
-}
-
-function useRegisterSubmit() {
-    const [onSubmit, submit, submitStatus, submitHandler] = useSubmit();
-    useEffect(() => {
-        if (!submit.toSubmit || !submit.toSubmit.current) return;
-        const info = submit.toSubmit;
-        const student = submit.toSubmit.current;
-        const trigger = submit.trigger;
-        const source = axios.CancelToken.source();
-        axios.post(`/api/students`, student, {cancelToken: source.token})
-        .then(success => submitHandler.onSuccess().execute(success, trigger, info))
-        .catch(error => {
-            if (!axios.isCancel(error)) submitHandler.onError().execute(error, trigger, info)
-        });
-        return () => source.cancel();
-    }, [submit, submitHandler]);
-    const resetHandler = useRef({
-        onSuccess: [{id: "resetter", handler: (_f, event, student) => {
-            event.target.reset();
-            student.current = {}
-        }}]
     });
     useSubmitHandlers(submitHandler, resetHandler);
     return [onSubmit, submitStatus, submitHandler];

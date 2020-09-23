@@ -1,18 +1,10 @@
 const {Stage, InvalidStageError} = require("../stage");
-const Student = require("../../student");
+const {curry} = require("../functional");
 
-const curry = fn => {
-	const arity = fn.length;
-	return function $curry(...args) {
-		if (args.length < arity) return $curry.bind(null, ...args);
-		else return fn.call(null, ...args);	
-	}
-}
-
-const datehandler = curry((datepart, comparison) => {
+const dateHandler = curry((datepart, comparison, Schema) => {
 	return function(target, values) {
 		const formattedField = target.replace(/>/g , '.');
-		const path = Student.schema.path(formattedField);
+		const path = Schema.path(formattedField);
 		if (!path) throw new InvalidStageError();
 		const type = path.options.type;
 		if (type !== Date) throw new InvalidStageError();
@@ -32,16 +24,19 @@ const datehandler = curry((datepart, comparison) => {
 const dateparts = ["year", "month", "dayOfMonth", "toDate"];
 const comparisons = ["eq", "ne", "gt", "lt"];
 
-const comparedates = dateparts.map(datepart => {
-	const dateparthandler = datehandler(datepart);
-	const datestage = new Stage(datepart, ...comparisons.map(comparison => {
-		const comparestage = new Stage(comparison);
-		comparestage.register(dateparthandler(comparison));
-		return comparestage;
-	}));
-	return datestage;
-});
+const dateIn = Schema => {
+	const comparedates = dateparts.map(datepart => {
+		const datepartHandler = dateHandler(datepart);
+		const datestage = new Stage(datepart, ...comparisons.map(comparison => {
+			const comparisonHandler = datepartHandler(comparison);
+			const comparestage = new Stage(comparison);
+			comparestage.register(comparisonHandler(Schema));
+			return comparestage;
+		}));
+		return datestage;
+	});
+	const dates = new Stage("date", ...comparedates);
+	return dates;
+}
 
-const dates = new Stage("date", ...comparedates);
-
-module.exports = dates;
+module.exports = dateIn;
