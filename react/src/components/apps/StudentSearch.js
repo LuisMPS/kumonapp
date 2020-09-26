@@ -1,15 +1,21 @@
 import React, {useRef, useState} from "react";
 import SearchIcon from '@material-ui/icons/Search';
-import {makeStyles, Paper, Link, Typography, Chip} from "@material-ui/core";
-import useStudentFetch from "../../hooks/useStudentFetch";
-import StudentFormatter from "../student/StudentFormatter";
+import {makeStyles, Paper, Link, Chip} from "@material-ui/core";
+import Student from "../response/Response";
+import StudentFormatter from "../response/ResponseFormatter";
 import StyledInput from "../styled/StyledInput";
 import Label from "../styled/Label";
 import Programs from "../../global/Programs";
 
 function StudentSearch() {
-    const source = useRef([]);
-    const endpoint = source.current;
+    return <Student sources = {[]} renders = {{
+        renderBase: searcher => <StudentSearcher searcher = {searcher}/>,
+        renderFound: results => <StudentSearchResults results = {results} />,
+        renderUnknown: () => null
+    }}/>
+}
+
+function StudentSearcher({searcher}) {
     const queries = useRef(new Map());
     const onQuery = ([query, value]) => {
         if (!value) queries.current.delete(query);
@@ -19,16 +25,13 @@ function StudentSearch() {
         const queryList = Array.from(queries.current.entries()).concat(selectors)
             .map(([query, value]) => `${query}=${value}`);
         const endpoint = `${base}${queryList.join("&")}`;
-        source.current = queries.current.size > 0 ? [endpoint] : [];
-        refetcher(); 
+        const source = queries.current.size > 0 ? [endpoint] : [];
+        searcher(source);
     }
-    const [fetcher, refetcher] = useStudentFetch(endpoint);
-    const results = fetcher.fetched;
-    return <>
-        <StudentSearchBar onQuery = {onQuery}/>
+    return <div className = "student-search">
+        <StudentSearchBar onQuery = {onQuery} />
         <StudentSearchPrograms onQuery = {onQuery} />
-        <StudentSearchResults results = {results} />
-    </>
+    </div>
 }
 
 function StudentSearchBar({onQuery}) {
@@ -42,6 +45,14 @@ const useChipStyles = makeStyles(theme => ({
     chip: {margin: theme.spacing(1)}
 }));
 
+function StudentSearchPrograms({onQuery}) {
+    return Programs.names().map(program => 
+        <StudentSearchChip key = {program} onQuery = {onQuery} 
+        query = {`exists_programs>${program.toLowerCase()}`} 
+        label = {`Inscrito a ${Programs.alias(program)}`}/>
+    );
+}
+
 function StudentSearchChip({onQuery, query, label}) {
     const classes = useChipStyles();
     const [active, setActive] = useState(false);
@@ -50,14 +61,6 @@ function StudentSearchChip({onQuery, query, label}) {
         return !active;
     })
     return <Chip clickable component = "span" color = {active ? "primary": "default"} label = {label} onClick = {onClick} variant = "default" className = {classes.chip}/>
-}
-
-function StudentSearchPrograms({onQuery}) {
-    return Programs.names().map(program => 
-        <StudentSearchChip key = {program} onQuery = {onQuery} 
-        query = {`exists_programs>${program.toLowerCase()}`} 
-        label = {`Inscrito a ${Programs.alias(program)}`}/>
-    );
 }
 
 const useResultStyles = makeStyles(theme => ({
@@ -79,20 +82,21 @@ const useResultStyles = makeStyles(theme => ({
     result_info: {
         padding: "1rem",
         "& > p": {
-            lineHeight: "1.5rem"
+            lineHeight: "1.5rem",
+            fontSize: "1rem"
         }
     }
 }));
 
 function StudentSearchResults({results}) {
     const classes = useResultStyles();
-    return <StudentFormatter students = {results} formatter = {student => 
+    return <StudentFormatter responses = {results} formatter = {student => 
         <Paper className = {classes.result_wrapper} elevation = {7}>
         <Link className = {classes.result_link} href = {`/student?uuid=${student.uuid}`}>
-        <Typography component = "div" className = {classes.result_info}>
+        <div className = {classes.result_info}>
             <p>{student.fullname}</p>
             <p>Nació: {student.birth.split("T")[0]}</p>
-        </Typography>
+        </div>
         </Link>
         </Paper>
     }/>

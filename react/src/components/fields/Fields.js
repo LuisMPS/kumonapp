@@ -8,17 +8,15 @@ function Fields(props) {
     const initialValues = initial.values;
     const initialPath = initial.path || [];
     return fields.map(field => {
-        const {label, name, type, placeholder, styles = {}} = field; 
+        const {label, name, type, ...fieldProps} = field; 
         const completename = [...initialPath, name].join(".");
         const value = initialValues && initialValues[name] !== undefined ? initialValues[name] : "";
         const parsedValue = type === "date" ? value.split("T")[0] : value;
-        const {variant = "standard", adornment, inputStyle} = styles;
-        const inputProps = {...forInput, type, placeholder, name: completename, defaultValue: parsedValue};
-        const passingProps = {variant, inputProps};
-        return <Label key = {name}> {label} 
+        const inputProps = {...forInput, ...fieldProps, type, name: completename, defaultValue: parsedValue};
+        return <Label key = {completename}> {label} 
             {type === "select" 
-            ? <StyledSelect options = {field.options} inputStyle = {inputStyle} {...passingProps}/>
-            : <StyledInput adornment = {adornment} inputStyle = {inputStyle} {...passingProps} />} 
+            ? <StyledSelect options = {field.options} {...inputProps}/>
+            : <StyledInput {...inputProps} />} 
         </Label>
     });
 }

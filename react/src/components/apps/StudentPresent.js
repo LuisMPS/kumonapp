@@ -1,8 +1,8 @@
 import React, {useContext} from "react";
 import {UUIDContext} from "../../context/UUIDContext";
-import Student from "../student/Student";
+import Student from "../response/Response";
+import StudentFormatter from "../response/ResponseFormatter";
 import {StudentUploadPhoto, StudentUploadReport} from "./StudentUpload";
-import StudentFormatter from "../student/StudentFormatter";
 import {StudentProgramUnsub, StudentUnsub} from "./StudentUnsub";
 import {StyledButton} from "../styled/StyledButton";
 
@@ -16,7 +16,7 @@ function StudentPresentMedia() {
             <StyledButton onClick = {refetcher} color = "primary">Reintentar</StyledButton>
         </>,
         renderFound: students => 
-            <StudentFormatter students = {students} formatter = {student => 
+            <StudentFormatter responses = {students} formatter = {student => 
                 <StudentUploadPhoto fileStartSource = {student["photo-src"]} />
             }/>
     }}/>

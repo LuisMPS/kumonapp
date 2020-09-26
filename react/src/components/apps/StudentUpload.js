@@ -7,6 +7,8 @@ import SnackbarCard from "../cards/SnackbarCard";
 import Image from "../styled/Image";
 import {Link, makeStyles} from "@material-ui/core";
 import ProgressCard from "../cards/ProgressCard";
+import {FormContained} from "../../context/FormContext";
+import FormRenders from "../forms/FormRenders";
 
 const useFormStyle = makeStyles({
     upload_form: {margin: "1rem 0rem"}
@@ -17,19 +19,18 @@ function StudentUpload(props) {
     const {filePath, fileStartSource, ...rest} = props;
     const {render} = rest;
     const [source, setSource] = useState({src: fileStartSource, timestamp: Date.now()});
-    return <>
+    return <FormContained onSuccess = {[{id: "source-changer", handler: source => setSource({src: source, timestamp: Date.now()})}]}>
         {render && render(source)}
-        <UploadForm className = {classes.upload_form} submitProps = {[filePath]} 
-        onSuccess = {[{id: "source-changer", handler: source => setSource({src: source, timestamp: Date.now()})}]}
-        renders = {{
-            renderButton: () => <StyledButton startIcon = {<CloudUploadIcon />} type = "submit">Subir</StyledButton>,
+        <UploadForm className = {classes.upload_form} submitProps = {[filePath]} renders = {{
+            renderButton: () => <StyledButton startIcon = {<CloudUploadIcon />} type = "submit">Subir</StyledButton>
+        }}/>
+        <FormRenders renders = {{
             renderSuccess: () => <SnackbarCard autoHideDuration = {3000} type = "success">Actualizado correctamente!</SnackbarCard>,
             renderError: () => <SnackbarCard autoHideDuration = {2500} type = "error">Error al subir!</SnackbarCard>,
             renderWait: progress => <ProgressCard color = "primary"
                 value = {progress && progress.loaded && progress.total ? progress.loaded / progress.total * 100 : 0} />
-        }}
-        />
-    </>;
+        }}/>
+    </FormContained>;
 }
 
 

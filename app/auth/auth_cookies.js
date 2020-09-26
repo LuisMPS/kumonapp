@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 function jwtCookie(req, res, next) {
     const secretKey = process.env.JWT_SECRET;
-    const token = jwt.sign({sub: req.user}, secretKey);
+    const token = jwt.sign({sub: req.user.uuid, name: req.user.username}, secretKey);
     res.cookie("jwt_api", token, {httpOnly: true});
     next();
 }

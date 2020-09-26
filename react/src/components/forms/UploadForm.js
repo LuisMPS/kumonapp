@@ -1,5 +1,5 @@
 import {useFileInput} from "../../hooks/useInput";
-import {useFileSubmit} from "../../hooks/useSubmit";
+import useFileSubmit from "../../hooks/useSubmit/useFileSubmit";
 import withFormHandlers from "../../hoc/withFormHandlers";
 import UploadFields from "../fields/UploadFields";
 

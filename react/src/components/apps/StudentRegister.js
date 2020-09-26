@@ -4,21 +4,27 @@ import {StyledButton} from "../styled/StyledButton";
 import {StudentRegisterForm} from "../forms/StudentForms";
 import SnackbarCard from "../cards/SnackbarCard";
 import {Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, makeStyles} from "@material-ui/core";
+import {FormContained} from "../../context/FormContext";
+import FormRenders from "../forms/FormRenders";
 
 function StudentRegister() {
-    return <ToggleButton renders = {{ 
-        renderButton: onToggle => <StyledButton color = "primary" onClick = {onToggle} 
-            buttonStyle = {{margin: "1rem 0rem", display: "block"}}>Registrar
-        </StyledButton>,
-        renderExpanded: () => <StudentRegisterForm renders = {{
-            renderButton: () => <StyledButton type = "submit" color = "primary" 
-                buttonStyle = {{margin: "1.5rem 0rem"}}> Subir
+    return <FormContained>
+        <ToggleButton renders = {{ 
+            renderButton: onToggle => <StyledButton color = "primary" onClick = {onToggle} 
+                buttonStyle = {{margin: "1rem 0rem", display: "block"}}>Registrar
             </StyledButton>,
+            renderExpanded: () => <StudentRegisterForm renders = {{
+                renderButton: () => <StyledButton type = "submit" color = "primary" 
+                    buttonStyle = {{margin: "1.5rem 0rem"}}> Subir
+                </StyledButton>
+            }}/> 
+        }}/>
+        <FormRenders renders = {{
             renderSuccess: () => <SnackbarCard autoHideDuration = {1500} type = "success">Alumno registrado correctamente!</SnackbarCard>,
             renderError: () => <SnackbarCard autoHideDuration = {2000} type = "error">Error al registrar alumno</SnackbarCard>,
             renderWait: (progress, handler) => progress && !progress.allow && <StudentRegisterWarning progress = {progress} handler = {handler} />
-        }}/> 
-    }}/>
+        }}/>
+    </FormContained>
 }
 
 const useStyles = makeStyles({
@@ -43,11 +49,11 @@ function StudentRegisterWarning({progress, handler}) {
             </DialogContentText>
         </DialogContent>
         <DialogActions className = {classes.dialog_actions}>
-            <StyledButton color = "secondary" onClick = {onAllow}>
-                Continuar
-            </StyledButton>
             <StyledButton color = "default" onClick = {onCancel}>
                 Cancelar
+            </StyledButton>
+            <StyledButton color = "secondary" onClick = {onAllow}>
+                Continuar
             </StyledButton>
         </DialogActions>
     </Dialog>

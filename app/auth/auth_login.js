@@ -9,19 +9,19 @@ passport.use(new LocalStrategy(
             if (!user) { done(null, false, {message: "Unknown user!"}); return; }
             bcrypt.compare(password, user.password).then(result => {
                 if (!result) done(null, false, {message: "Incorrect password!"});
-                else done(null, user.uuid);
+                else done(null, user);
             }).catch(err => done(err, false));
         }).catch(err => done(err, false));
     }
 ));
 
-passport.deserializeUser(function(userUUID, done) {
-    User.findOne({uuid: userUUID}).then(user => {
+passport.deserializeUser(function(user, done) {
+    User.findOne({uuid: user.uuid}).then(user => {
         if (!user) { done(null, false); return; } 
-        done(null, user.uuid);
+        done(null, user);
     }).catch(err => done(err, false));
 });
 
-passport.serializeUser(function(userUUID, done) {
-    done(null, userUUID);
+passport.serializeUser(function(user, done) {
+    done(null, {username: user.username, uuid: user.uuid});
 });

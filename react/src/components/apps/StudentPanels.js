@@ -1,8 +1,8 @@
 import React from "react";
 import {PanelAccordion, PanelAccordionHead, PanelAccordionIcon, PanelAccordionContent} from "../styled/StyledAccordion";
 import {panels} from "../../global/Calls";
-import Student from "../student/Student";
-import StudentFormatter from "../student/StudentFormatter";
+import Student from "../response/Response";
+import StudentFormatter from "../response/ResponseFormatter";
 
 function StudentPanels() {
     return panels.map(panel => <PanelAccordion key = {panel.id}>
@@ -14,7 +14,7 @@ function StudentPanels() {
            renders = {{
                renderUnknown: content.renderUnknown,
                renderLoading: content.renderLoading,
-               renderFound: students => <StudentFormatter students = {students} formatter = {content.formatter} />
+               renderFound: students => <StudentFormatter responses = {students} formatter = {content.formatter} />
            }}/>)} 
         </PanelAccordionContent>
     </PanelAccordion>)

@@ -1,14 +1,14 @@
 import {useRegularInput} from "../../hooks/useInput";
-import {useUserLoginSubmit, useUserRegisterSubmit} from "../../hooks/useSubmit";
+import {useUserLogin, useUserRegister} from "../../hooks/useSubmit/useUserSubmit";
 import withFormHandlers from "../../hoc/withFormHandlers";
 import {UserLoginFields, UserRegisterFields} from "../fields/UserFields";
 
 const UserLoginForm = withFormHandlers(UserLoginFields,
-    {useSubmit: useUserLoginSubmit, useInput: useRegularInput}
+    {useSubmit: useUserLogin, useInput: useRegularInput}
 );
 
 const UserRegisterForm = withFormHandlers(UserRegisterFields,
-    {useSubmit: useUserRegisterSubmit, useInput: useRegularInput}
+    {useSubmit: useUserRegister, useInput: useRegularInput}
 );
 
 export {UserLoginForm, UserRegisterForm};

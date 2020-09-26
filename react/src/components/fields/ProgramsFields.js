@@ -2,14 +2,14 @@ import React from "react";
 import withFieldHandlers from "../../hoc/withFieldHandlers";
 import Fields from "./Fields";
 import PayFields from "./PayFields";
-import {ActionSubbing} from "../apps/StudentFormActions";
+import {ActionSubbing} from "../actions/StudentActions";
 import {addMonthsUTC} from "../../global/Utils";
 import Programs from "../../global/Programs";
 import {ProgramGridContainer, ProgramGridItem} from "../styled/StyledGrid";
 
 function ProgramFields({initial, onInput, required}) {
     const programfields = [
-        {name: "enroll", label: "Fecha de Ingreso", type: "date", styles: {inputStyle: {width: 200}}},
+        {name: "enroll", label: "Fecha de Ingreso", type: "date", inputStyle: {width: 200}},
         {name: "fee", label: "Pago Mensual", type: "text"},
         {name: "level", label: "Nivel", type: "text"}
     ];

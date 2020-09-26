@@ -1,4 +1,5 @@
 const Schema = require("mongoose").Schema;
+const Student = require("../student");
 
 const CommentAuthorSchema = new Schema(
     {
@@ -39,8 +40,15 @@ const CommentSchema = new Schema(
             type: Number,
             default: 0
         }
-    }, {versionKey: false}
+    }, {versionKey: false, selectPopulatedPaths: false}
 );
+
+CommentSchema.virtual("student-info", {
+    ref: Student,
+    localField: "student", 
+    foreignField: "uuid", 
+    justOne: true
+});
 
 module.exports = CommentSchema;
 

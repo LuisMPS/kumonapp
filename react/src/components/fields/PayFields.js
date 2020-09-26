@@ -9,7 +9,7 @@ function PayFields({initial, onInput, date}) {
     const payfields = [
         {name: "amount", label: "Cantidad", type: "text"},
         {name: "method", label: "Forma de Pago", type: "select", options: ["Efectivo", "Transferencia", "Deposito", "Tarjeta de Crédito", "Otro"]},
-        {name: "paid", label: "Fecha de Pago", type: "date", styles: {inputStyle: {width: 200}}}
+        {name: "paid", label: "Fecha de Pago", type: "date", inputStyle: {width: 200}}
     ];
     return <Fields fields = {payfields} initial = {{path, values}} onInput = {onInput} />;
 }

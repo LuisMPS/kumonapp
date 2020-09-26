@@ -1,5 +1,5 @@
 import React, {useRef} from "react";
-import {useSubmitHandlers} from "../hooks/useSubmit";
+import {useSubmitHandlers} from "../hooks/useSubmit/useSubmitHandlers";
 
 function withFieldHandlers(Fields) {
     return function HandledFields(props) {

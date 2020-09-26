@@ -1,8 +1,8 @@
 import React, {Fragment} from "react";
 import TogglePopover from "../toggle/TogglePopper";
 import {notifications} from "../../global/Calls";
-import Student from "../student/Student";
-import StudentFormatter from "../student/StudentFormatter";
+import Student from "../response/Response";
+import StudentFormatter from "../response/ResponseFormatter";
 import {StyledIconButton} from "../styled/StyledButton";
 import NotificationsIcon from '@material-ui/icons/Notifications';
 
@@ -15,7 +15,7 @@ function StudentNotifications() {
             renders = {{
                 renderLoading: () => "La notificación se mostrará aquí a continuación...",
                 renderUnknown: notif.renderUnknown, 
-                renderFound: students => <StudentFormatter students = {students} formatter = {notif.formatter}/>
+                renderFound: students => <StudentFormatter responses = {students} formatter = {notif.formatter}/>
             }}/>)}
         </Fragment>
     }), renderButton: onToggle => <StyledIconButton onClick = {onToggle} >

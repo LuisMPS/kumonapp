@@ -68,6 +68,21 @@ const panels = [
                 return `${student.fullname} pagó $${pay_amount} / $${student.programs[program].fee} este mes en ${programs.alias(program)}.`
             }
         }))
+    },
+    {
+        id: "comments", 
+        title: "Mis Comentarios Más Recientes",
+        content: [{
+            id: "comments",
+            sources: [`/api/users/comments?sort_time=-1&limit_from=0&limit_to=15&select_message=1&select_time=1&select_student=1&select_uuid=1`],
+            renderUnknown: () => "No has escrito ningún comentario. Puedes escribir comentarios para cada alumno!",
+            renderLoading: () => "Cargando...",
+            formatter: comment => {
+                const time = new Date(comment.time);
+                const student = comment["student-info"];
+                return `[${time.getDate()}/${time.getMonth()}/${time.getFullYear()}] Para ${student ? student.fullname : "???"}: "${comment.message}"`;
+            }
+        }]
     }
 ];
 

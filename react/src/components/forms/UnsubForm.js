@@ -1,14 +1,15 @@
-import {useUnsubSubmit, useProgramUnsubSubmit} from "../../hooks/useSubmit";
+import {useStudentUnsub} from "../../hooks/useSubmit/useStudentSubmit";
+import {useProgramUnsub} from "../../hooks/useSubmit/useProgramSubmit";
 import {useConfirmInput} from "../../hooks/useInput";
 import withFormHandlers from "../../hoc/withFormHandlers";
 import UnsubFields from "../fields/UnsubFields";
 
 const UnsubForm = withFormHandlers(UnsubFields, 
-    {useSubmit: useUnsubSubmit, useInput: useConfirmInput}
+    {useSubmit: useStudentUnsub, useInput: useConfirmInput}
 );
 
 const UnsubProgramForm = withFormHandlers(UnsubFields, 
-    {useSubmit: useProgramUnsubSubmit, useInput: useConfirmInput}
+    {useSubmit: useProgramUnsub, useInput: useConfirmInput}
 );
 
 export {UnsubForm, UnsubProgramForm};

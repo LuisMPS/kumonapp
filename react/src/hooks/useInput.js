@@ -30,4 +30,10 @@ function useConfirmInput() {
     return [onConfirm, confirm];
 }
 
-export {useRegularInput, useConfirmInput, useFileInput};
+function useDummyInput() {
+    const dummy = useRef(true);
+    const onDummy = useCallback(() => null, []);
+    return [onDummy, dummy];
+}
+
+export {useRegularInput, useConfirmInput, useFileInput, useDummyInput};

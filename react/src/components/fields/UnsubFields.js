@@ -1,5 +1,5 @@
 import React from "react";
-import { StyledButton } from "../styled/StyledButton";
+import {StyledButton} from "../styled/StyledButton";
 import ToggleButton from "../toggle/ToggleButton";
 
 function UnsubFields({onInput}) {

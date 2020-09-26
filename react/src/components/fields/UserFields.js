@@ -6,17 +6,17 @@ import Fields from "./Fields";
 
 function UserLoginFields({onInput}) {
     const loginfields = [
-        {name: "username", placeholder: "Usuario", type: "text", styles: {variant: "outlined", adornment: <AccountCircleIcon />}},
-        {name: "password", placeholder: "Contraseña", type: "password", styles: {variant: "outlined", adornment: <LockIcon />}}
+        {name: "username", placeholder: "Usuario", type: "text", variant: "outlined", adornment: <AccountCircleIcon />},
+        {name: "password", placeholder: "Contraseña", type: "password", variant: "outlined", adornment: <LockIcon />}
     ];
     return <Fields onInput = {onInput} fields = {loginfields} required />
 }
 
 function UserRegisterFields({onInput}) {
     const registerfields = [
-        {name: "key", placeholder: "Clave de Registro", type: "password", styles: {variant: "outlined", adornment: <VpnKeyIcon />}},
-        {name: "username", placeholder: "Usuario", type: "text", styles: {variant: "outlined", adornment: <AccountCircleIcon />}},
-        {name: "password", placeholder: "Contraseña", type: "password", styles: {variant: "outlined", adornment: <LockIcon />}}
+        {name: "key", placeholder: "Clave de Registro", type: "password", variant: "outlined", adornment: <VpnKeyIcon />},
+        {name: "username", placeholder: "Usuario", type: "text", variant: "outlined", adornment: <AccountCircleIcon />},
+        {name: "password", placeholder: "Contraseña", type: "password", variant: "outlined", adornment: <LockIcon />}
     ];
     return <Fields onInput = {onInput} fields = {registerfields} required />
 }
