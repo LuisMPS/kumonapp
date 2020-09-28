@@ -38,6 +38,9 @@ Esta es una aplicación web creada con el fin de ayudar en la administración de
   + Control sobre historial de pagos de último par de meses.
   + Posibilidad de subir archivos de identificación de alumnos (Foto Personal, Boleta Mensual).
   + Registro personalizado de usuarios para asistentes.
+  + Posibilidad de agregar comentarios (observaciones) para cada alumno.
+  + Posiblidad de ver la persona que agregó comentario.
+  + Visualización de últimos comentarios hechos por usuario.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
